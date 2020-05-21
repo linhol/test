@@ -1,2 +1,3 @@
-# Hallo se jeg tester ting
-Se på det her. Rimelig greit.
+# Arduino in1060
+
+Her kan du finne arduinokoden til gruppeprosjekt i in1060.
