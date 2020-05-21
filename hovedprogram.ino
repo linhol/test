@@ -40,21 +40,27 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);   // Dette er RFID-leseren vår.
 #endif
 #define PIN        6
 #define NUMPIXELS 24
+// BRIGHTNESS kan endres for svakere eller sterkere lys.
 #define BRIGHTNESS 50
 
 // Dette er LED-ring-objektet vårt og brukes til å styre den.
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
-// Dette er tidverdien som brukes for å få LED-ringen til å lyse i ring.
+// Dette er tidverdien som brukes for å få LED-ringen til å lyse i ring. Denne kan endres.
 #define DELAYVAL 30
 
-// Brukere
+// Brukere og oppgavekort
+// Har man flere eller færre brukere eller poengkort kan man legge det til her.
 String bruker1 = "CD 5A 51 7B"; // GRØNN BRUKER
 String bruker2 = "56 0C 93 4C"; // RØD BRUKER
 String poengKort1 = "A9 C9 A6 99";
 String poengKort2 = "92 C9 4E 07";
+
+// Her tar vi vare på brukernes poeng.
 int poengBruker1 = 0;
 int poengBruker2 = 0;
+
+// Denne strengen hjelper oss å sjekke hvilken bruker som skal få poeng.
 String brukerNaa = "";
 
 
@@ -62,7 +68,9 @@ String brukerNaa = "";
 
 // Her starter vi å sette opp alle delene våre.
 void setup() {
-  Serial.begin(9600);   // For å teste RFID starter vi serial monitor.
+  // For å teste RFID starter vi serial monitor.  
+  Serial.begin(9600);
+
   // Disse hører til RFID-leseren.
   SPI.begin();
   mfrc522.PCD_Init();
@@ -75,18 +83,20 @@ void setup() {
 
 // Her er hovedprogrammet vårt.
 void loop() {
+  // status kjøres først og viser poengsummen til begge brukere. Dette gjør at dette vises så langt ingen har scannet noe.
   status();
-  // Look for new cards
+
+  // Her ser vi etter kort eller brikker som scannes.
   if ( ! mfrc522.PICC_IsNewCardPresent()) 
   {
     return;
   }
-  // Select one of the cards
+  // Velger kort.
   if ( ! mfrc522.PICC_ReadCardSerial()) 
   {
     return;
   }
-  //Show UID on serial monitor
+  //Viser det i serial monitor for å gjøre testing og feilsøking enklere.
   Serial.print("UID tag :");
   String content= "";
   byte letter;
@@ -103,6 +113,9 @@ void loop() {
 
 
 
+
+// Dette kjøres hvis man finner et av kortene:
+
 // Dette er et 1-poengers kort.
   if (content.substring(1) == poengKort1) {
     giPoeng(1);
@@ -117,15 +130,14 @@ void loop() {
   }
  
  else if (content.substring(1) == bruker1) {
-  gronnFyll(); // Denne kan brukes for å fylle hele ringen
-//   brukerA();    // Denne fyller halve ringen
+  // gronnFyll brukes for å fylle hele ringen. Man kan også bruke bruker1() gor halve ringen.
+  gronnFyll();
   delay(500);
   tomLED();
   }
 
   else if (content.substring(1) == bruker2) {
-  rodFyll();
-//   brukerB();
+  blaaFyll();
   delay(500);
   tomLED();
   }
@@ -146,11 +158,10 @@ void tomLED() {
 
 // Denne markerer hvilken bruker som er valgt.
 // GRØNN
-void brukerA() {
+void bruker1() {
   pixels.clear();
   brukerNaa = bruker1;
   for(int i=0; i<(NUMPIXELS/2); i++) {
- 
     pixels.setPixelColor(i, pixels.Color(0, 150, 0));
     pixels.show();
     delay(DELAYVAL);
@@ -158,13 +169,12 @@ void brukerA() {
 }
 
 // Denne markerer hvilken bruker som er valgt.
-// RØD
-void brukerB() {
+// BLÅ
+void bruker2() {
   pixels.clear();
   brukerNaa = bruker2;
   for(int i=24; i>=(NUMPIXELS/2); i--) {
- 
-    pixels.setPixelColor(i, pixels.Color(150, 0, 0));
+    pixels.setPixelColor(i, pixels.Color(0, 0, 150));
     pixels.show();
     delay(DELAYVAL);
   }
@@ -175,19 +185,18 @@ void gronnFyll() {
   pixels.clear();
   brukerNaa = bruker1;
   for(int i=0; i<NUMPIXELS; i++) {
- 
     pixels.setPixelColor(i, pixels.Color(0, 150, 0));
     pixels.show();
     delay(DELAYVAL);
   }
 }
 
-// Denne farger alle LED-ene 1 og 1 til fargen rød.
-void rodFyll() {
+// Denne farger alle LED-ene 1 og 1 til fargen blå.
+void blaaFyll() {
   pixels.clear();
   brukerNaa = bruker2;
   for (int i = NUMPIXELS; i >= 0; i--) {
-    pixels.setPixelColor(i, pixels.Color(150, 0, 0));
+    pixels.setPixelColor(i, pixels.Color(0, 0, 150));
     pixels.show();
     delay(DELAYVAL);
   }
@@ -196,8 +205,7 @@ void rodFyll() {
 // Denne viser antall poeng en bruker har
 void poengTeller1() {
   pixels.clear();
-  for(int i=0; i<poengBruker1; i++) {
- 
+  for(int i=0; i<poengBruker1 && i < 12; i++) {
     pixels.setPixelColor(i, pixels.Color(0, 150, 0));
     pixels.show();
     delay(DELAYVAL);
@@ -208,30 +216,31 @@ void poengTeller1() {
 void poengTeller2() {
     pixels.clear();
     for(int i = 24; i >= 24-poengBruker2 && i >= 12; i--) {
-      pixels.setPixelColor(i, pixels.Color(150, 0, 0));
+      pixels.setPixelColor(i, pixels.Color(0, 0, 150));
       pixels.show();
       delay(DELAYVAL);
   }
 }
 
-// Denne viser brukerne opp mot hverandre
+// Denne viser brukernes poengsum opp mot hverandre. Den lyser opp antall poeng hver bruker har.
 void status() {
-  for(int i=0; i<poengBruker1; i++) {
+  for(int i=0; i<poengBruker1 && i <= 12; i++) {
     pixels.setPixelColor(i, pixels.Color(0, 150, 0));
     pixels.show();
     delay(DELAYVAL/2);
   }
-  for(int i = 24; i > 24-poengBruker2-1; i--) {
-    pixels.setPixelColor(i, pixels.Color(150, 0, 0));
+  for(int i = 24; i > 24-poengBruker2-1 && i >= 12; i--) {
+    pixels.setPixelColor(i, pixels.Color(0, 0, 150));
     pixels.show();
     delay(DELAYVAL/2);
   }
+
 }
 
-
+// Denne gir poeng til den valgte brukeren utifra hvor mye poeng den får inn som parameter. Den har en maks på 12 poeng på grunn av antall pixler på LED-ringen.
 void giPoeng (int antPoeng) {
     if (brukerNaa == bruker1) {
-      if (poengBruker1 <= 12) {
+      if (poengBruker1 < 12) {
           poengBruker1 = poengBruker1 + antPoeng;
       }
       poengTeller1();
