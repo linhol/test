@@ -52,7 +52,8 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);   // Dette er RFID-leseren vår.
 // Dette er LED-ring-objektet vårt og brukes til å styre den.
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
-// Dette er tidverdien som brukes for å få LED-ringen til å lyse i ring. Denne kan endres.
+// Dette er tidverdien som brukes for å få LED-ringen til å lyse i ring. Denne
+kan endres.
 #define DELAYVAL 30
 
 // Brukere og oppgavekort
@@ -89,7 +90,8 @@ void setup() {
 
 // Her er hovedprogrammet vårt.
 void loop() {
-  // status kjøres først og viser poengsummen til begge brukere. Dette gjør at dette vises så langt ingen har scannet noe.
+  // status kjøres først og viser poengsummen til begge brukere. Dette gjør at
+  // dette vises så langt ingen har scannet noe.
   status();
 
   // Her ser vi etter kort eller brikker som scannes.
@@ -102,7 +104,7 @@ void loop() {
   {
     return;
   }
-  //Viser det i serial monitor for å gjøre testing og feilsøking enklere.
+  // Viser det i serial monitor for å gjøre testing og feilsøking enklere.
   Serial.print("UID tag :");
   String content= "";
   byte letter;
@@ -136,7 +138,8 @@ void loop() {
   }
  
  else if (content.substring(1) == bruker1) {
-  // gronnFyll brukes for å fylle hele ringen. Man kan også bruke bruker1() gor halve ringen.
+  /* gronnFyll brukes for å fylle hele ringen. Man kan også bruke bruker1() for
+  halve ringen. */
   gronnFyll();
   delay(500);
   tomLED();
@@ -243,7 +246,10 @@ void status() {
 
 }
 
-// Denne gir poeng til den valgte brukeren utifra hvor mye poeng den får inn som parameter. Den har en maks på 12 poeng på grunn av antall pixler på LED-ringen.
+/* Denne gir poeng til den valgte brukeren utifra hvor mye poeng den får inn
+som parameter. Den har en maks på 12 poeng på grunn av antall pixler på
+LED-ringen.
+*/
 void giPoeng (int antPoeng) {
     if (brukerNaa == bruker1) {
       if (poengBruker1 < 12) {
