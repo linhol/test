@@ -1,9 +1,15 @@
 /*
-Dette er et hovedprogram som skal la en bruker scanne en brukerbrikke og deretter et oppgavekort for å få poeng. Poengene vises på en adafruit 24-led neopixel-ring og krever også en rfid-leser.
+Dette er et hovedprogram som skal la en bruker scanne en brukerbrikke og
+deretter et oppgavekort for å få poeng. Poengene vises på en adafruit 24-led
+neopixel-ring og krever også en rfid-leser.
 
 Programmets hovedfunksjon.
-To brukere konkurrerer om å få flest poeng. Man får poeng ved å utføre oppgaver. Kortene som hrer til løsningen inneholder oppgaver.
-En bruker gjør en oppgave. For å få poeng for oppgaven scanner brukeren sin brukerbrikke og lysringen lyser brukerens farge. Deretter scanner man oppgavekortet man har utført for å få poeng. Forskjellige oppgaver har forskjellig antall poeng. Første spiller til å lyse opp halve sirkelen vinner.
+To brukere konkurrerer om å få flest poeng. Man får poeng ved å utføre
+oppgaver. Kortene som hrer til løsningen inneholder oppgaver.
+En bruker gjør en oppgave. For å få poeng for oppgaven scanner brukeren sin
+brukerbrikke og lysringen lyser brukerens farge. Deretter scanner man
+oppgavekortet man har utført for å få poeng. Forskjellige oppgaver har
+forskjellig antall poeng. Første spiller til å lyse opp halve sirkelen vinner.
 
 */
 
