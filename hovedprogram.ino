@@ -52,8 +52,7 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);   // Dette er RFID-leseren vår.
 // Dette er LED-ring-objektet vårt og brukes til å styre den.
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
-// Dette er tidverdien som brukes for å få LED-ringen til å lyse i ring. Denne
-kan endres.
+// Dette er tidverdien som brukes for å få LED-ringen til å lyse i ring. Denne kan endres.
 #define DELAYVAL 30
 
 // Brukere og oppgavekort
@@ -70,8 +69,13 @@ int poengBruker2 = 0;
 // Denne strengen hjelper oss å sjekke hvilken bruker som skal få poeng.
 String brukerNaa = "";
 
-
- 
+/*
+// Dette kan brukes til å utvide prototypen til å ta ibruk et lykkehjul for å velge oppgaver for bruker. Foreløpig inaktive på den fysiske prototypen.
+// Denne er til bryter.
+#define switchPin 2
+// Denne er til servo.
+#define motorPin 3
+*/
 
 // Her starter vi å sette opp alle delene våre.
 void setup() {
@@ -138,7 +142,7 @@ void loop() {
   }
  
  else if (content.substring(1) == bruker1) {
-  /* gronnFyll brukes for å fylle hele ringen. Man kan også bruke bruker1() for
+  /* gronnFyll brukes for å fylle hele ringen. Man kan også bruke brukerA() for
   halve ringen. */
   gronnFyll();
   delay(500);
@@ -150,9 +154,17 @@ void loop() {
   delay(500);
   tomLED();
   }
+
+
+  // Dette er en implementasjon som kan gjøres etter videre brukertesting. Det involverer et lykkehjul med oppgaver som hjelper brukere å få tildelt oppgaver. Dette har vi ikke fåt implementert ettersom vi sitter hver for oss. 
+  // switchState = digitalRead(switchPin);
+
+  // if (switchState == LOW){
+  //   digitalWrite(motorPin, HIGH);
+  // } else {
+  //   digitalWrite(motorPin, LOW);
+  // }
 }
-
-
 
 
 
@@ -167,7 +179,7 @@ void tomLED() {
 
 // Denne markerer hvilken bruker som er valgt.
 // GRØNN
-void bruker1() {
+void brukerA() {
   pixels.clear();
   brukerNaa = bruker1;
   for(int i=0; i<(NUMPIXELS/2); i++) {
@@ -179,7 +191,7 @@ void bruker1() {
 
 // Denne markerer hvilken bruker som er valgt.
 // BLÅ
-void bruker2() {
+void brukerB() {
   pixels.clear();
   brukerNaa = bruker2;
   for(int i=24; i>=(NUMPIXELS/2); i--) {
